@@ -26,6 +26,9 @@
     --shadow-color: rgba(15, 23, 42, 0.06);
 
     --category-bg: #e6e6e6;
+    --alert-bg: rgb(70, 70, 129);
+    --alert-border: rgb(94, 94, 94);
+
 }
 
 /* Night Mode */
@@ -49,17 +52,38 @@
     --shadow-color: rgba(0, 0, 0, 0.2);
 
     --category-bg: #191f2b;
+
+    --alert-bg: rgba(70, 70, 129, 0.5);
+    --alert-border: grey;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
+    .alert{
+        background-color: rgba(70, 70, 129, 0.8);
+        box-shadow: 0 0 5px 1px var(--alert-border);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        position: fixed;
+        right: -250px;
+        bottom: 30px;
+        transition: all 0.5s ease;
+    }
+    .alert.active{
+        right: 20px;
+    }
 }
 
 .navbar {
     box-shadow: 0 0 5px 2px var(--shadow-color);
     padding: 15px 0;
     display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
     align-items: center;
     justify-content: center;
     background-color: var(--navbar-color);
@@ -158,6 +182,7 @@ body {
     justify-content: start;
     gap: 30px;
     padding: 15px 0;
+    margin-top: 75px;
 
     li {
         list-style: none;
@@ -390,6 +415,14 @@ footer {
         flex-direction: column;
         gap: 10px;
         align-items: start !important;
+    }
+
+    .pagenation{
+        gap: 10px;
+
+        li{
+            padding: 7px 12px;
+        }
     }
 }
 
