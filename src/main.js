@@ -101,26 +101,60 @@ const fetchProducts = async function () {
             timer = setTimeout(() => {
                 const searchValue = searchInput.value.toLowerCase().trim();
 
+                // If Name includes searchValue:
                 const filtered = data.filter((product) =>
                     product.name.toLowerCase().includes(searchValue)
                 );
                 if (filtered.length < 1) {
+                    // If categories includes searchValue:
                     if (categories.includes(searchValue)) {
-                        const newCategoried = data.filter(p => p.category === searchValue);
+                        const newCategoried = data.filter(
+                            (p) => p.category === searchValue
+                        );
                         pagenation(newCategoried);
                         return;
-                    };
+                    }
+
+                    // If searchValue includes categories: 
                     for (let c of categories) {
                         if (searchValue.includes(c)) {
-                            const newCategoried = data.filter(p => p.category === c);
+                            const newCategoried = data.filter(
+                                (p) => p.category === c
+                            );
                             pagenation(newCategoried);
                             return;
                         }
                     }
 
+                    // If searchValue include name:
+                    const names = data.reduce((acc, c) => {
+                        acc.push(c.name);
+                        return acc;
+                    }, []);
+
+                    const byNames = [];
+                    for (let name of names) {
+                        if (searchValue.includes(name.toLowerCase().trim())) {
+                            byNames.push(name);
+                        }
+                    }
+                    console.log(byNames);
+                    if (byNames.length > 0) {
+                        const readyProducts = [];
+                        for (let name of byNames) {
+                            readyProducts.push(
+                                data.find((p) => p.name === name)
+                            );
+                        }
+                        pagenation(readyProducts);
+                        return;
+                    }
+
+                    // Anyway not found:
                     emptyPage();
                     return;
                 }
+
                 pagenation(filtered);
             }, 1500);
 
