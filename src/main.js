@@ -33,6 +33,12 @@ const notify = (message) => {
     }, 4000);
 };
 /////////////////////////
+const emptyPage = () => {
+    products.innerHTML = `<p class="empty_page_p">Bunday mahsulot topilmadi.</p>`
+    products.classList.add("empty");
+    pagenationUl.style.display = "none";
+};
+/////////////////////////
 const products = document.querySelector('.products');
 const categoriesUl = document.querySelector('.categories');
 const pagenationUl = document.querySelector('.pagenation');
@@ -57,27 +63,73 @@ const fetchProducts = async function () {
 
         all.addEventListener('click', () => {
             pagenation(data);
-            currentCategory.classList.remove("active");
-            all.classList.add("active");
+            currentCategory.classList.remove('active');
+            all.classList.add('active');
             currentCategory = all;
         });
 
         categories.forEach((categoryValue) => {
             const newCategory = document.createElement('li');
-            newCategory.textContent = categoryValue[0].toUpperCase() + categoryValue.slice(1) + 's';
+            newCategory.textContent =
+                categoryValue[0].toUpperCase() + categoryValue.slice(1) + 's';
             categoriesUl.append(newCategory);
 
             newCategory.addEventListener('click', () => {
-                currentCategory.classList.remove("active");
-                newCategory.classList.add("active");
+                currentCategory.classList.remove('active');
+                newCategory.classList.add('active');
                 currentCategory = newCategory;
-                const categoriedData = data.filter((product) => product.category === categoryValue);
+                const categoriedData = data.filter(
+                    (product) => product.category === categoryValue
+                );
                 pagenation(categoriedData);
             });
         });
 
+        // Search rendering
+        const searchInput = document.querySelector('#search_input');
+        let timer;
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.length < 1 || !searchInput.value) {
+                pagenation(data);
+                currentCategory.classList.remove("active");
+                all.classList.add("active");
+                currentCategory = all;
+                return;
+            };
+
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                const searchValue = searchInput.value.toLowerCase().trim();
+
+                const filtered = data.filter((product) =>
+                    product.name.toLowerCase().includes(searchValue)
+                );
+                if (filtered.length < 1) {
+                    if (categories.includes(searchValue)) {
+                        const newCategoried = data.filter(p => p.category === searchValue);
+                        pagenation(newCategoried);
+                        return;
+                    };
+                    for (let c of categories) {
+                        if (searchValue.includes(c)) {
+                            const newCategoried = data.filter(p => p.category === c);
+                            pagenation(newCategoried);
+                            return;
+                        }
+                    }
+
+                    emptyPage();
+                    return;
+                }
+                pagenation(filtered);
+            }, 1500);
+
+        });
+
         // Rendering pagenaton
         function pagenation(readyData) {
+            pagenationUl.style.display = 'flex';
+
             const numberOfPages = Math.ceil(readyData.length / 12);
             const copiedReadyData = [...readyData];
             let separated = [];
@@ -90,8 +142,8 @@ const fetchProducts = async function () {
             const newNextPage = document.createElement('li');
 
             render(separated[0]);
-            newPrePage.classList.add("disabled");
-            if(separated.length === 1) newNextPage.classList.add("disabled");
+            newPrePage.classList.add('disabled');
+            if (separated.length === 1) newNextPage.classList.add('disabled');
             let currentPage = null;
 
             pagenationUl.innerHTML = '';
@@ -110,67 +162,65 @@ const fetchProducts = async function () {
                     if (currentPage) currentPage.classList.remove('active');
                     newLi.classList.add('active');
                     currentPage = newLi;
-                    if(currentPage.textContent === "1"){
-                        newPrePage.classList.add("disabled");
+                    if (currentPage.textContent === '1') {
+                        newPrePage.classList.add('disabled');
                     }
-                    if(Number(currentPage.textContent) > 1){
-                        newPrePage.classList.remove("disabled");
-                    };
-                    if(Number(currentPage.textContent) === separated.length){
-                        newNextPage.classList.add("disabled");
+                    if (Number(currentPage.textContent) > 1) {
+                        newPrePage.classList.remove('disabled');
                     }
-                    if(Number(currentPage.textContent) < separated.length){
-                        newNextPage.classList.remove("disabled");
+                    if (Number(currentPage.textContent) === separated.length) {
+                        newNextPage.classList.add('disabled');
+                    }
+                    if (Number(currentPage.textContent) < separated.length) {
+                        newNextPage.classList.remove('disabled');
                     }
                 });
             });
-
-            
 
             newPrePage.innerHTML = `<i class="fa-solid fa-angle-left"></i>`;
             newNextPage.innerHTML = `<i class="fa-solid fa-angle-right"></i>`;
 
             pagenationUl.prepend(newPrePage);
             pagenationUl.append(newNextPage);
-            
+
             newPrePage.addEventListener('click', () => {
-                const currentIndex = Number(currentPage.textContent) -1;
-                if(currentIndex > 0) {
+                const currentIndex = Number(currentPage.textContent) - 1;
+                if (currentIndex > 0) {
                     render(separated[currentIndex - 1]);
-                    currentPage.classList.remove("active");
-                    currentPage.previousElementSibling.classList.add("active");
+                    currentPage.classList.remove('active');
+                    currentPage.previousElementSibling.classList.add('active');
                     currentPage = currentPage.previousElementSibling;
-                };
-                if(currentPage.textContent === "1"){
-                    newPrePage.classList.add("disabled");
-                };
-                if(separated.length > 1 && currentIndex < separated.length){
-                    newNextPage.classList.remove("disabled");
+                }
+                if (currentPage.textContent === '1') {
+                    newPrePage.classList.add('disabled');
+                }
+                if (separated.length > 1 && currentIndex < separated.length) {
+                    newNextPage.classList.remove('disabled');
                 }
             });
             newNextPage.addEventListener('click', () => {
-                const currentIndex = Number(currentPage.textContent) -1;
+                const currentIndex = Number(currentPage.textContent) - 1;
 
-                if(currentIndex < separated.length - 1){
+                if (currentIndex < separated.length - 1) {
                     render(separated[currentIndex + 1]);
                     currentPage.classList.remove('active');
                     currentPage.nextElementSibling.classList.add('active');
                     currentPage = currentPage.nextElementSibling;
                 }
-                if(currentIndex === separated.length - 2){
-                    newNextPage.classList.add("disabled");
-                };
-                if(separated.length > 1 && currentIndex + 1 > 0){
-                    newPrePage.classList.remove("disabled");
+                if (currentIndex === separated.length - 2) {
+                    newNextPage.classList.add('disabled');
+                }
+                if (separated.length > 1 && currentIndex + 1 > 0) {
+                    newPrePage.classList.remove('disabled');
                 }
             });
-
         }
         pagenation(data);
 
         // Rendering products
         function render(array) {
             products.innerHTML = '';
+            products.classList.remove("empty");
             const fragment = document.createDocumentFragment();
             array.forEach((product) => {
                 const newProduct = document.createElement('div');

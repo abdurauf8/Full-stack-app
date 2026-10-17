@@ -67,7 +67,9 @@ body {
         padding: 20px 30px;
         border-radius: 10px;
         position: fixed;
-        right: -250px;
+        width: 300px;
+        white-space: wrap;
+        right: -330px;
         bottom: 30px;
         transition: all 0.5s ease;
     }
@@ -211,6 +213,8 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     padding-bottom: 10px;
+    min-height: 50vh;
+    align-items: center;
 
     .product {
         width: 285px;
@@ -279,6 +283,10 @@ body {
         }
     }
 }
+.products.empty{
+    display: flex;
+    justify-content: center;
+}
 
 .pagenation {
     display: flex;
@@ -288,6 +296,7 @@ body {
     padding: 20px;
 
     li {
+        background-color: var(--surface-color);
         list-style: none;
         padding: 10px 15px;
         border-radius: 10px;
@@ -313,6 +322,7 @@ footer {
     align-items: center;
     justify-content: center;
     padding: 40px 0;
+    bottom: 0;
 
     .container_footer {
         text-align: center;
