@@ -5,7 +5,7 @@ let currentTheme = localStorage.getItem('theme') || null;
 if (currentTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
     themeBtn.classList.toggle('night');
-    logo.setAttribute('src', 'src/assets/logo_nav.png');
+    logo.setAttribute('src', '/src/assets/logo_nav.png');
 }
 
 themeBtn.addEventListener('click', () => {
@@ -14,13 +14,13 @@ themeBtn.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
         currentTheme = 'light';
         themeBtn.classList.toggle('night');
-        logo.setAttribute('src', 'src/assets/logo_nav_light.png');
+        logo.setAttribute('src', '/src/assets/logo_nav_light.png');
     } else if (currentTheme === 'light' || !currentTheme) {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
         currentTheme = 'dark';
         themeBtn.classList.toggle('night');
-        logo.setAttribute('src', 'src/assets/logo_nav.png');
+        logo.setAttribute('src', '/src/assets/logo_nav.png');
     }
 });
 /////////////////////////
@@ -57,6 +57,9 @@ const fetchProducts = async function () {
 
         all.addEventListener('click', () => {
             pagenation(data);
+            currentCategory.classList.remove("active");
+            all.classList.add("active");
+            currentCategory = all;
         });
 
         categories.forEach((categoryValue) => {
