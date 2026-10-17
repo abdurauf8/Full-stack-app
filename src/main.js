@@ -23,7 +23,7 @@ themeBtn.addEventListener('click', () => {
         logo.setAttribute('src', '/src/assets/logo_nav.png');
     }
 });
-/////////////////////////
+///////////////////////// Notification
 const notify = (message) => {
     const alert = document.querySelector('.alert');
     alert.textContent = message;
@@ -86,7 +86,12 @@ const fetchProducts = async function () {
                 copiedReadyData.splice(0, 12);
             }
 
+            const newPrePage = document.createElement('li');
+            const newNextPage = document.createElement('li');
+
             render(separated[0]);
+            newPrePage.classList.add("disabled");
+            if(separated.length === 1) newNextPage.classList.add("disabled");
             let currentPage = null;
 
             pagenationUl.innerHTML = '';
@@ -105,8 +110,61 @@ const fetchProducts = async function () {
                     if (currentPage) currentPage.classList.remove('active');
                     newLi.classList.add('active');
                     currentPage = newLi;
+                    if(currentPage.textContent === "1"){
+                        newPrePage.classList.add("disabled");
+                    }
+                    if(Number(currentPage.textContent) > 1){
+                        newPrePage.classList.remove("disabled");
+                    };
+                    if(Number(currentPage.textContent) === separated.length){
+                        newNextPage.classList.add("disabled");
+                    }
+                    if(Number(currentPage.textContent) < separated.length){
+                        newNextPage.classList.remove("disabled");
+                    }
                 });
             });
+
+            
+
+            newPrePage.innerHTML = `<i class="fa-solid fa-angle-left"></i>`;
+            newNextPage.innerHTML = `<i class="fa-solid fa-angle-right"></i>`;
+
+            pagenationUl.prepend(newPrePage);
+            pagenationUl.append(newNextPage);
+            
+            newPrePage.addEventListener('click', () => {
+                const currentIndex = Number(currentPage.textContent) -1;
+                if(currentIndex > 0) {
+                    render(separated[currentIndex - 1]);
+                    currentPage.classList.remove("active");
+                    currentPage.previousElementSibling.classList.add("active");
+                    currentPage = currentPage.previousElementSibling;
+                };
+                if(currentPage.textContent === "1"){
+                    newPrePage.classList.add("disabled");
+                };
+                if(separated.length > 1 && currentIndex < separated.length){
+                    newNextPage.classList.remove("disabled");
+                }
+            });
+            newNextPage.addEventListener('click', () => {
+                const currentIndex = Number(currentPage.textContent) -1;
+
+                if(currentIndex < separated.length - 1){
+                    render(separated[currentIndex + 1]);
+                    currentPage.classList.remove('active');
+                    currentPage.nextElementSibling.classList.add('active');
+                    currentPage = currentPage.nextElementSibling;
+                }
+                if(currentIndex === separated.length - 2){
+                    newNextPage.classList.add("disabled");
+                };
+                if(separated.length > 1 && currentIndex + 1 > 0){
+                    newPrePage.classList.remove("disabled");
+                }
+            });
+
         }
         pagenation(data);
 

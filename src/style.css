@@ -259,6 +259,9 @@ body .alert.active {
   background-color: var(--primary-color);
   color: var(--second-text-color);
 }
+.pagenation li.disabled {
+  color: #909296;
+}
 
 footer {
   box-shadow: 0 0 5px 2px var(--shadow-color);

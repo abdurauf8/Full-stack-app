@@ -300,6 +300,9 @@ body {
         background-color: var(--primary-color);
         color: var(--second-text-color);
     }
+    li.disabled {
+        color: #909296;
+    }
 }
 
 footer {
