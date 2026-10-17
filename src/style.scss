@@ -72,6 +72,7 @@ body {
         right: -330px;
         bottom: 30px;
         transition: all 0.5s ease;
+        line-height: 1.3;
     }
     .alert.active{
         right: 20px;
@@ -155,6 +156,25 @@ body {
             .cart {
                 display: flex;
                 align-items: center;
+                
+                i{
+                    position: relative;
+                    #cart_count{
+                        position: absolute;
+                        font-weight: normal;
+                        font-size: 11px;
+                        background-color: #FF5722;
+                        border-radius: 50%;
+                        color: white;
+                        width: 22px;
+                        height: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        top: -70%;
+                        right: -70%;
+                    }
+                }
             }
 
             #login_link {

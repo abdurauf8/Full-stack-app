@@ -1,3 +1,16 @@
+/////////////////// Cart counter
+const cartCounter = document.querySelector('#cart_count');
+const cartCount = () => {
+    cartCounter.style.display = "flex";
+    const cartNow = JSON.parse(localStorage.getItem("cart"));
+    if(cartNow) {
+        cartCounter.textContent = `${cartNow.cart.length}`;
+        return;
+    };
+    cartCounter.style.display = "none";
+};
+cartCount();
+/////////////////// Theme functions
 const themeBtn = document.querySelector('.theme');
 const logo = document.querySelector('#logo');
 
@@ -32,7 +45,7 @@ const notify = (message) => {
         alert.classList.remove('active');
     }, 4000);
 };
-/////////////////////////
+///////////////////////// Made page empty
 const emptyPage = () => {
     products.innerHTML = `<p class="empty_page_p">Bunday mahsulot topilmadi.</p>`
     products.classList.add("empty");
@@ -297,6 +310,58 @@ const fetchProducts = async function () {
 
                 newProduct.append(newImgPart, newInfoPart, newBtnsPart);
                 fragment.append(newProduct);
+
+                // Adding to cart and favourites
+                newProduct.addEventListener('click', (e) => {
+                    if(e.target.id === "add_cart"){
+                        if(localStorage.getItem("cart") === null){
+                            let localCart = {
+                                cart: []
+                            };
+                            localCart.cart.push(product);
+                            localStorage.setItem("cart", JSON.stringify(localCart));
+                            notify("Savatga birinchi mahsulot qo'shildi.")
+                            cartCount();
+                        }else{
+                            let localCart = JSON.parse(localStorage.getItem("cart"));
+                            let contains = false;
+                            for(let p of localCart.cart){
+                                if(p.id === product.id) contains = true;
+                            }
+                            if(!contains){
+                                localCart.cart.push(product);
+                                localStorage.setItem("cart", JSON.stringify(localCart));
+                                notify("Savatga qo'shildi.");
+                                cartCount();
+                            }else{
+                                notify("Bu mahsulot savatda allaqachon mavjud!")
+                            }
+                        }
+                    }else if(e.target.id === "add_favourite"){
+                        if(localStorage.getItem("favourites") === null){
+                            let localFavourites = {
+                                favourites: []
+                            };
+                            localFavourites.favourites.push(product);
+                            localStorage.setItem("favourites", JSON.stringify(localFavourites));
+                            notify("Birinchi sevimli qo'shildi.");
+                        }else{
+                            let localFavourites = JSON.parse(localStorage.getItem("favourites"));
+                            let contains = false;
+                            for (let p of localFavourites.favourites) {
+                                if (p.id === product.id) contains = true;
+                            }
+                            if(!contains){
+                                localFavourites.favourites.push(product);
+                                localStorage.setItem("favourites", JSON.stringify(localFavourites));
+                                notify("Sevimlilarga qo'shildi");
+                            }else{
+                                notify("Bu mahsulot sevimlilarda allaqachon mavjud!")
+                            }
+                        }
+                    }
+                });
+
             });
             products.append(fragment);
         }
